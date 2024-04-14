@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Periods</title>
+    <style>
+        body{
+            background-color: aquamarine;
+        }
+        .calendar {
+            margin-bottom: 20px;
+        }
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .calendar table th,
+        .calendar table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        .calendar table th {
+            background-color: #f2f2f2;
+        }
+        .potential-period-date {
+            background-color: #FFB6C1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Track Your Periods</h1>
+    <label for="last-period-end">Last Period End Date:</label>
+    <input type="date" id="last-period-end">
+    <button onclick="trackPeriods()">Generate Calendars</button>
+    <div id="calendars"></div>
+
+    <script>
+        function trackPeriods() {
+            var lastPeriodEnd = new Date(document.getElementById("last-period-end").value);
+            var calendarsHTML = "";
+
+            for (var i = 0; i < 3; i++) { 
+                var month = lastPeriodEnd.getMonth() + 1 + i; 
+                var year = lastPeriodEnd.getFullYear();
+                if (month > 12) { // 
+                    month -= 12;
+                    year++;
+                }
+                var monthString = new Date(year, month - 1, 1).toLocaleString('default', { month: 'long' });
+                calendarsHTML += '<div class="calendar">';
+                calendarsHTML += '<h2>' + monthString + ' ' + year + '</h2>';
+                calendarsHTML += generateCalendarHTML(year, month, lastPeriodEnd);
+                calendarsHTML += '</div>';
+            }
+
+            document.getElementById("calendars").innerHTML = calendarsHTML;
+        }
+
+        function generateCalendarHTML(year, month, lastPeriodEnd) {
+            var startDate = new Date(year, month - 1, 1); 
+            var endDate = new Date(year, month, 0);
+            var startDay = startDate.getDay();
+            var numDays = endDate.getDate();
+            
+            var calendarHTML = '<table>';
+            calendarHTML += '<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>';
+            calendarHTML += '<tr>';
+            
+            for (var i = 0; i < startDay; i++) {
+                calendarHTML += '<td></td>';
+            }
+
+            var currentDate = 1;
+            for (var i = startDay; i < 7; i++) {
+                calendarHTML += '<td' + (isPotentialPeriodDate(year, month, currentDate, lastPeriodEnd) ? ' class="potential-period-date"' : '') + '>' + currentDate + '</td>';
+                currentDate++;
+            }
+            calendarHTML += '</tr>';
+
+            while (currentDate <= numDays) {
+                calendarHTML += '<tr>';
+                for (var i = 0; i < 7 && currentDate <= numDays; i++) {
+                    calendarHTML += '<td' + (isPotentialPeriodDate(year, month, currentDate, lastPeriodEnd) ? ' class="potential-period-date"' : '') + '>' + currentDate + '</td>';
+                    currentDate++;
+                }
+                calendarHTML += '</tr>';
+            }
+            calendarHTML += '</table>';
+
+            return calendarHTML;
+        }
+
+        function isPotentialPeriodDate(year, month, day, lastPeriodEnd) {
+            var cycleLength = 28;
+            var potentialPeriodStart = new Date(lastPeriodEnd);
+            potentialPeriodStart.setDate(lastPeriodEnd.getDate() + cycleLength);
+            var potentialPeriodEnd = new Date(potentialPeriodStart);
+            potentialPeriodEnd.setDate(potentialPeriodStart.getDate() + 6);
+
+            var currentDate = new Date(year, month - 1, day);
+            return currentDate >= potentialPeriodStart && currentDate <= potentialPeriodEnd;
+        }
+    </script>
+</body>
+</html>

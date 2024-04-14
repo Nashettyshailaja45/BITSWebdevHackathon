@@ -1,0 +1,49 @@
+body{
+    background: url("img4.png") fixed center no-repeat;
+    backdrop-filter: blur(20px);
+}
+h2{
+    font-style: italic;
+    background-color: white;
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    padding: 20px;
+}
+/* .column {
+    float: left;
+    width: 30%;
+    padding: 10px;
+  }
+  img {
+    width: 100%;
+  } */
+
+  .container {
+    display: flex;
+}
+
+.column {
+    position: relative;
+    margin: 0 10px;
+    flex: 1;
+    float: left;
+}
+
+.column img {
+    width: 90%;
+    height: 90%;
+    border-radius: 10px;
+}
+
+.overlay-text {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    color:black;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    background-color: white;
+    border-radius: 5px;
+}
